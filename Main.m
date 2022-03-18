@@ -58,6 +58,7 @@ for i = 1:length(Data) % For every data set
     
 end
 
+
 [ExpCombFreqHz,CombFreqOrder] = sort(ExpCombFreqHz);
 
 ExpCombAngVelMagDB = ExpCombAngVelMagDB(CombFreqOrder,:);
@@ -74,27 +75,33 @@ PhaseExp = PhaseExp(CombFreqOrder,:);
 
 %% Problem 1
 
-Re1 = -0.01;
+Re1 = -0.02;
 Re2 = -0.01;
+Re0 = -0.01;
 PlantPoles = eig(A);
 [Plantsysnum,Plantsysden] = ss2tf(A,B,C,D);
 tf(Plantsysnum,Plantsysden)
 [zplant,pplant,kplant] = tf2zp(Plantsysnum,Plantsysden);
-pnew = [0, 0, Re1+PlantPoles(2),Re1+PlantPoles(3),Re2+PlantPoles(5),Re2+PlantPoles(6)];
+pnew = [0, Re0, Re1+PlantPoles(2),Re1+PlantPoles(3),Re2+PlantPoles(5),Re2+PlantPoles(6)];
 [NumNew,DenNew] = zp2tf(zplant,pnew,kplant);
 tfNew = tf(NumNew,DenNew);
 
  w = logspace(-.2,2.0,1000);
+%  opts = bodeoptions;
+%  opts.PhaseWrapping = 'on';
+%  opts.PhaseWrappingBranch = -180;
  [mag,phase,w] = bode(tfNew,w);
  mag = squeeze(mag);
  phase = squeeze(phase);
- ind1 = find(phase < -350);
- phase(ind1) = phase(ind1)+360;
+ ind1 = find(phase > 10);
+ phase(ind1) = phase(ind1)-360;
+%   ind1 = find(phase < -350);
+%  phase(ind1) = phase(ind1)+360;
  
  figure;
  subplot(211)
- hold on
  semilogx(w/(2*pi),20*log10(mag))
+ hold on
  semilogx(ExpCombFreqHz,ExpCombAngVelMagDB,'x',"Linewidth",3)
  
  ylabel('Magnitude, [rad/(Nm), dB]')
@@ -102,8 +109,8 @@ tfNew = tf(NumNew,DenNew);
  grid
  
  subplot(212)
- hold on
  semilogx(w/(2*pi),phase)
+ hold on
  semilogx(ExpCombFreqHz,PhaseExp,'x',"Linewidth",3)
  ylabel('Phase, [deg]')
  xlabel('Frequency, [Hz]')
