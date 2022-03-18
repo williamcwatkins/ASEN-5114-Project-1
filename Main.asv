@@ -4,16 +4,25 @@ clear
 close all
 
 %% Problem 1
- n = 2.4;
-m1 = n*0.09; % tip mass 1, [kg]
-m2 = n*0.09; % tip mass 2, [kg]
-Jb = n*0.01; % body MOI, [kg m^2]
-k1 = n*.115; % wing 1 hinge spring, [Nm/rad]
-k2 = n*.115; % wing 2 hinge spring, [Nm/rad]
+
+m1 = 0.2; % tip mass 1, [kg]
+m2 = 0.2; % tip mass 2, [kg]
+Jb = 0.05; % body MOI, [kg m^2]
+k1 = 1; % wing 1 hinge spring, [Nm/rad]
+k2 = 1; % wing 2 hinge spring, [Nm/rad]
 l1 = 0.3; % wing 1 length, [m]
 l2 = 0.3; % wing 2 length, [m]
 r = 0.071; % body radius to wing attachment, [m]
 
+n = 2.6;
+m1 = n*0.5; % tip mass 1, [kg]
+m2 = n*0.5; % tip mass 2, [kg]
+Jb = n*0.01; % body MOI, [kg m^2]
+k1 = n*.62; % wing 1 hinge spring, [Nm/rad]
+k2 = n*.62; % wing 2 hinge spring, [Nm/rad]
+l1 = 0.3; % wing 1 length, [m]
+l2 = 0.3; % wing 2 length, [m]
+r = 0.071; % body radius to wing attachment, [m]
 A = [0 0 0 (1+r/l1)/Jb (1+r/l2)/Jb  0;
   0 0 0 -1/(l1*m1)  0        0;
   0 0 0  0  -1/(l2*m2)   0;
@@ -74,8 +83,8 @@ PhaseExp = PhaseExp(CombFreqOrder,:);
 
 %% Problem 1
 
-Re1 = -0.01;
-Re2 = -0.01;
+Re1 = -0.001;
+Re2 = -0.001;
 PlantPoles = eig(A);
 [Plantsysnum,Plantsysden] = ss2tf(A,B,C,D);
 tf(Plantsysnum,Plantsysden)
